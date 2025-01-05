@@ -1,0 +1,20 @@
+function [C,B,A]=dir2fs(h)
+    M=length(h);
+    H=fft(h,M);
+    magH=abs(H);phaH=angle(H)';
+    if(M==2*floor(M/2))
+        L=M/2-1;
+        A1=[1,-1,0;1,1,0];
+        C1=real([H(1),H(L+2)]);
+    else
+        L=(M-1)/2;
+        A1=[1,-1,0];
+        C1=real(H(1));
+    end
+    k=(1:L)';
+    B=zeros(L,2);A=ones(L,3);
+    A(1:L,2)=-2*cos(2*pi*k/M);A=[A;A1];
+    B(1:L,1)=cos(phaH(2:L+1));
+    B(1:L,2)=-cos(phaH(2:L+1)-2*pi*k/M);
+    C=[2*magH(2:L+1),C1]';
+end
